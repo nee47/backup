@@ -1,0 +1,125 @@
+#include "cola.h"
+#include "testing.h"
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#define NUMERO_ELEMENTOS 5000
+typedef struct tipo{
+	void* dato;
+} tipo_t;
+typedef struct tipu{
+	void* simo;
+}tipu_t;
+void pruebas_cola_vacia(){
+  printf("***** Inicio de pruebas cola vacia *****\n");
+  cola_t* cola = cola_crear();
+  print_test("cola creada con exito  ",cola!=NULL);
+  print_test("cola esta vacia ",cola_esta_vacia(cola));
+  print_test("cola ver primero devuelve NULL", !cola_ver_primero(cola));
+  print_test("cola desencolar devuelve NULL", !cola_desencolar(cola));	
+  cola_destruir(cola1,NULL);
+}
+
+
+void pruebas_encolar_desencolar(){ 
+  printf("\n ***Inicio de pruebas cola_encolar cola_desencolar *** \n");
+  int a=3;
+  int b=1;
+  cola_t* cola = cola_crear();
+	
+  print_test("Encolo el elemento 3 cola2",cola_encolar(cola,&a));
+  print_test("La cola no esta vacia",!cola_esta_vacia(cola));
+  print_test("Encolo el elemento 1 cola2",cola_encolar(cola,&b));
+  print_test("Encolo el numero 3 cola2",cola_encolar(cola,&a));
+  print_test("Ver primero me devuelve 3 ",*(int*)cola_ver_primero(cola)==3);
+  print_test("Desencolo el primer elemento y devuelve valor ",*(int*)cola_desencolar(cola)==3);
+  print_test("Ver primero me devuelve 1 ",*(int*)cola_ver_primero(cola)==1);
+  print_test("Desencolo el primer elemento y devuelve valor ",*(int*)cola_desencolar(cola)==1);
+  print_test("Ver primero me devuelve 3 ",*(int*)cola_ver_primero(cola2)==3);
+  print_test("Desencolo el primer elemento y devuelve valor ",*(int*)cola_desencolar(cola2)==3);
+  print_test("Devuelve NUll Cuando ya no hay elementos para desencolar",cola_desencolar(cola2)==NULL);
+  print_test("Vuelvo a encolar un elemento ",cola_encolar(cola2,&a));
+  print_test("Vuelvo a encolar el elemento 1 cola2",cola_encolar(cola2,&b));
+  print_test("**Cola destrida**",true);
+  cola_destruir(cola2,NULL);
+  
+  printf("\n ***Inicio de pruebas con structs *** \n");
+  cola_t* cola3=cola_crear();
+  cola_t* cola4=cola_crear();
+  tipo_t* temp1=malloc(sizeof(tipo_t));
+  tipo_t* temp2=malloc(sizeof(tipo_t));
+  print_test("Encolo un  cola_t ",cola_encolar(cola3,cola4));
+  print_test("Encolo un  tipo_t",cola_encolar(cola3,temp1));
+  print_test("Encolo un  tipo_t",cola_encolar(cola3,temp2));
+  print_test("cola no esta vacia",!cola_esta_vacia(cola3));
+  cola_destruir(cola3, free);
+  
+  printf("** Prueba de destuccion de cola \n ");
+  cola_t* cola5 = cola_crear();
+  cola_destruir(cola5, NULL);
+  if (cola5) printf("COLA5 NO NULL \n");
+  print_test("destruyo la cola con exito ", cola5 == NULL);	
+  
+}
+
+
+void pruebas_volumen(){
+	int a;
+	printf("***** Inicio de pruebas de volumen *****\n");
+	printf("Pruebas encolando colas \n");
+	cola_t* cola4=cola_crear();
+	bool ok= true;
+	for(a=0;a<NUMERO_ELEMENTOS;a++){
+	  if (!cola_encolar(cola4,cola4))  ok = false;
+	}
+	print_test("La cola no esta vacia",!cola_esta_vacia(cola4));
+	print_test("Encolo 5000 elementos",ok);
+		for(a=0;a<NUMERO_ELEMENTOS;a++){
+		  cola_desencolar(cola4);
+	}
+	print_test("Desencolo 5 elementos y esta vacia",cola_esta_vacia(cola4));
+	cola_destruir(cola4,NULL);
+	print_test("destruyo los elementos",true);
+
+	printf("Pruebas encolando muchos elementos\n");
+	cola_t* cola5=cola_crear();
+	int* vec = malloc(sizeof(int)*NUMERO_ELEMENTOS);
+	int b;
+	for(b=0;b<NUMERO_ELEMENTOS;b++){
+	  vec[b] = b ;
+	}	
+	ok = true;
+	for(a=0;a<NUMERO_ELEMENTOS;a++){
+	  if (!cola_encolar(cola5, &vec[a])) ok = false;
+	}
+	print_test("Encole 5000 elementos exitosamente", ok);
+	cola_encolar(cola5,vec);
+	print_test("cola no esta vacia",!cola_esta_vacia(cola5));
+	cola_destruir(cola5,NULL);
+	print_test("destruyo los elementos", !cola5);
+	
+	printf("Pruebas encolando muchos double\n");
+	cola_t* cola6=cola_crear();
+	tipu_t** vec1=malloc(sizeof(tipu_t)*NUMERO_ELEMENTOS);;
+	for(b=0;b<NUMERO_ELEMENTOS;b++){
+	  vec1[b]=malloc(sizeof(tipu_t));
+	}
+	
+	for(a=0;a<NUMERO_ELEMENTOS;a++){
+		cola_encolar(cola6,vec1[a]);
+	}
+	cola_encolar(cola6,vec1);
+	print_test("cola no esta vacia",!cola_esta_vacia(cola6));
+	cola_destruir(cola6,free);
+	print_test("destruyo los elementos",true);
+
+}
+
+
+void pruebas_cola_alumno(){
+	pruebas_basicas();
+	pruebas_encolar_desencolar();
+	pruebas_volumen();
+
+}
+

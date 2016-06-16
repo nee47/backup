@@ -1,0 +1,3 @@
+TAblero = (fila[0...n-1]) of boolean,
+  diagonal mas{-n+1 ...n-1}
+  diagonal menos {0 .. 2n-2}
